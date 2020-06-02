@@ -4,9 +4,12 @@ import com.atguigu.gmall.model.product.*;
 import com.atguigu.gmall.product.mapper.*;
 import com.atguigu.gmall.product.service.ManageService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
@@ -34,6 +37,12 @@ public class ManageServiceImpl implements ManageService {
 
     @Autowired
     private BaseAttrValueMapper baseAttrValueMapper;
+
+    @Autowired
+    private SpuInfoMapper spuInfoMapper;
+
+    @Autowired
+    private SkuInfoMapper skuInfoMapper;
 
     /**
      * 查询所有的一级分类信息
@@ -109,6 +118,8 @@ public class ManageServiceImpl implements ManageService {
         return baseAttrInfo;
     }
 
+
+
     /**
      * 根据属性id获取属性值
      * @param attrId
@@ -121,6 +132,26 @@ public class ManageServiceImpl implements ManageService {
         List<BaseAttrValue> baseAttrValueList = baseAttrValueMapper.selectList(queryWrapper);
         return baseAttrValueList;
     }
+
+    //根据三级分类id查询，sup分页数据
+    @Override
+    public IPage<SpuInfo> selectPage(Page<SpuInfo> pageParam, SpuInfo spuInfo) {
+        QueryWrapper<SpuInfo> wrapper = new QueryWrapper<>();
+        wrapper.eq("category3_id",spuInfo.getCategory3Id());
+        IPage<SpuInfo> spuInfoIPage = spuInfoMapper.selectPage(pageParam, wrapper);
+
+        return spuInfoIPage;
+
+    }
+
+    //分页查询sku
+    @Override
+    public IPage<SkuInfo> selectPageSku(Page<SkuInfo> pageParam) {
+        QueryWrapper<SkuInfo> wrapper = new QueryWrapper<>();
+        IPage<SkuInfo> skuInfoIPage = skuInfoMapper.selectPage(pageParam, wrapper);
+        return skuInfoIPage;
+    }
+
 
 }
 

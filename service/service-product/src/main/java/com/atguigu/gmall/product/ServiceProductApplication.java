@@ -1,9 +1,11 @@
 package com.atguigu.gmall.product;
 
+import io.swagger.annotations.SwaggerDefinition;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.ComponentScan;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * ServiceProductApplication
@@ -15,6 +17,7 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @ComponentScan({"com.atguigu.gmall"})
 @EnableDiscoveryClient
+@EnableSwagger2
 public class ServiceProductApplication {
 
     public static void main(String[] args) {
