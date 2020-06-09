@@ -1,17 +1,26 @@
 package com.atguigu.gmall.product.service.impl;
 
-import com.atguigu.gmall.model.product.*;
+import com.alibaba.fastjson.JSON;
+import com.atguigu.gmall.common.constant.RedisConst;
+import com.atguigu.gmall.product.mapper.*;
 import com.atguigu.gmall.product.mapper.*;
 import com.atguigu.gmall.product.service.ManageService;
+import com.atguigu.gmall.model.product.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * ManageServiceImpl
@@ -43,6 +52,21 @@ public class ManageServiceImpl implements ManageService {
 
     @Autowired
     private SkuInfoMapper skuInfoMapper;
+
+    @Autowired
+    private SpuImageMapper spuImageMapper;
+
+    @Autowired
+    private SkuImageMapper skuImageMapper;
+
+    @Autowired
+    private BaseCategoryViewMapper baseCategoryViewMapper;
+
+    @Autowired
+    SpuSaleAttrMapper spuSaleAttrMapper;
+
+    @Autowired
+    RedisTemplate redisTemplate;
 
     /**
      * 查询所有的一级分类信息
@@ -150,6 +174,100 @@ public class ManageServiceImpl implements ManageService {
         QueryWrapper<SkuInfo> wrapper = new QueryWrapper<>();
         IPage<SkuInfo> skuInfoIPage = skuInfoMapper.selectPage(pageParam, wrapper);
         return skuInfoIPage;
+    }
+
+    //根据supid
+    @Override
+    public List<SpuImage> getSpuImageList(Long spuId) {
+        QueryWrapper<SpuImage> wrapper = new QueryWrapper<>();
+        wrapper.eq("spu_id",spuId);
+        List<SpuImage> spuImages = spuImageMapper.selectList(wrapper);
+        return spuImages;
+    }
+
+    //远程调用
+    @Override
+    public SkuInfo getSkuInfo(Long skuId) {
+        String skuRedisKey = RedisConst.SKUKEY_PREFIX+skuId+RedisConst.SKUKEY_SUFFIX;
+
+        SkuInfo skuInfo = null;
+        //查询缓存
+        String skuInfoStr = (String)redisTemplate.opsForValue().get(skuRedisKey);
+
+        if (StringUtils.isNotBlank(skuInfoStr)){
+            skuInfo = JSON.parseObject(skuInfoStr,SkuInfo.class);
+        }
+        if (skuInfo == null) {
+            // 用来删除分布式锁的uuid
+            String uuid = UUID.randomUUID().toString();
+            // 分布式锁的key，sku:15:lock
+            Boolean OK = redisTemplate.opsForValue().setIfAbsent(
+                    RedisConst.SKUKEY_PREFIX + skuId + RedisConst.SKULOCK_SUFFIX
+                    , uuid
+                    , 10
+                    , TimeUnit.SECONDS);
+            if (OK){
+                //查询DB
+                skuInfo = getSkuInfoDB(skuId);
+                if (skuInfo==null){
+                    SkuInfo skuInfo1 = new SkuInfo();
+                    redisTemplate.opsForValue().set(skuRedisKey,
+                            JSON.toJSONString(skuInfo1),60*60,
+                            TimeUnit.SECONDS);//将空的sku对象存入缓存
+                    return skuInfo1;
+                }
+                redisTemplate.opsForValue().set(skuRedisKey, JSON.toJSONString(skuInfo));//缓存中的商品详情key
+
+                // 使用lua脚本删除分布式锁 // lua，在get到key后，根据key的具体值删除key
+                DefaultRedisScript<Long> luaScript = new DefaultRedisScript<>();
+                //luaScript.setResultType(Long.class);
+                luaScript.setScriptText("if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end");
+                redisTemplate.execute(luaScript, Arrays.asList("sku:" + skuId + ":lock"), uuid);
+                return skuInfo;
+            }else {
+                // 没有获取到分布式锁，1秒后开始自旋
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return getSkuInfo(skuId);
+            }
+        }
+        return skuInfo;
+    }
+
+    /*通多DB查询sku*/
+    private SkuInfo getSkuInfoDB(Long skuId) {
+        SkuInfo skuInfo = skuInfoMapper.selectById(skuId);
+        // 根据skuId 查询图片列表集合
+        QueryWrapper<SkuImage> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("sku_id", skuId);
+        List<SkuImage> skuImageList = skuImageMapper.selectList(queryWrapper);
+
+        skuInfo.setSkuImageList(skuImageList);
+        return skuInfo;
+    }
+
+
+    @Override
+    public BaseCategoryView getCategoryViewByCategory3Id(Long category3Id) {
+        return baseCategoryViewMapper.selectById(category3Id);
+    }
+
+    //查询价格
+    @Override
+    public BigDecimal getSkuPrice(Long skuId) {
+        SkuInfo skuInfo = skuInfoMapper.selectById(skuId);
+        BigDecimal price = skuInfo.getPrice();
+        return price;
+    }
+
+    //查询销售属性集合
+    @Override
+    public List<SpuSaleAttr> getSpuSaleAttrListCheckBySku(Long skuId, Long spuId) {
+        List<SpuSaleAttr> spuSaleAttrs = spuSaleAttrMapper.selectSpuSaleAttrListCheckBySku(skuId,spuId);
+        return spuSaleAttrs;
     }
 
 

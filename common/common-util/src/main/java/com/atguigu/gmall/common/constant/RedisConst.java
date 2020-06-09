@@ -1,4 +1,4 @@
-package com.atguigu.gamll.common.constant;
+package com.atguigu.gmall.common.constant;
 
 /**
  * Redis常量配置类

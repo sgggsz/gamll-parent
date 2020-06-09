@@ -1,4 +1,4 @@
-package com.atguigu.gamll.common.util;
+package com.atguigu.gmall.common.util;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;

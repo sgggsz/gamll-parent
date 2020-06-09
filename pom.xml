@@ -20,6 +20,8 @@
         <module>common/common-util</module>
         <module>service</module>
         <module>model</module>
+        <module>web</module>
+        <module>service-client</module>
     </modules>
 
     <properties>

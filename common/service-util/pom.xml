@@ -16,6 +16,9 @@
     <description>service-util</description>
 
     <dependencies>
+
+
+
         <dependency>
             <groupId>com.atguigu.gmall</groupId>
             <artifactId>common-util</artifactId>

@@ -1,14 +1,9 @@
 package com.atguigu.gmall.product.service.impl;
 
-import com.atguigu.gmall.model.product.BaseSaleAttr;
-import com.atguigu.gmall.model.product.SpuInfo;
-import com.atguigu.gmall.model.product.SpuSaleAttr;
-import com.atguigu.gmall.model.product.SpuSaleAttrValue;
-import com.atguigu.gmall.product.mapper.BaseSaleAttrMapper;
-import com.atguigu.gmall.product.mapper.SpuInfoMapper;
-import com.atguigu.gmall.product.mapper.SpuSaleAttrMapper;
-import com.atguigu.gmall.product.mapper.SpuSaleAttrValueMapper;
+import com.atguigu.gmall.product.mapper.*;
 import com.atguigu.gmall.product.service.SupService;
+import com.atguigu.gmall.model.product.*;
+import com.atguigu.gmall.product.mapper.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +22,7 @@ import java.util.List;
 public class SupServiceImpl implements SupService {
 
     @Autowired
-    private BaseSaleAttrMapper BaseSaleAttrMapper;
+    private com.atguigu.gmall.product.mapper.BaseSaleAttrMapper BaseSaleAttrMapper;
 
     @Autowired
     private SpuInfoMapper spuInfoMapper;
@@ -37,6 +32,9 @@ public class SupServiceImpl implements SupService {
 
     @Autowired
     private SpuSaleAttrValueMapper spuSaleAttrValueMapper;
+
+    @Autowired
+    private SpuImageMapper spuImageMapper;
     //差选属性名称
     @Override
     public List<BaseSaleAttr> getBaseSaleAttrList() {
@@ -70,7 +68,16 @@ public class SupServiceImpl implements SupService {
                 }
             }
         }
+        //保存图片信息
+        List<SpuImage> spuImageList = spuInfo.getSpuImageList();
 
+        for (SpuImage spuImage : spuImageList) {
+            spuImage.setSpuId(spuInfo.getId());
+            String imgName = spuImage.getImgName();
+            int length = imgName.length();
+            spuImage.setImgName(imgName.substring(length-19));
+            spuImageMapper.insert(spuImage);
+        }
 
     }
 

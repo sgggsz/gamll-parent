@@ -12,6 +12,8 @@
     <modules>
         <module>common-util</module>
         <module>service-util</module>
+        <module>web-util</module>
+        <module>web-util</module>
     </modules>
 
     <artifactId>common</artifactId>
@@ -52,11 +54,11 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
 
-        <!-- 服务配置-->
-        <!--<dependency>-->
-        <!--<groupId>org.springframework.cloud</groupId>-->
-        <!--<artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>-->
-        <!--</dependency>-->
+         <!--服务配置-->
+        <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
 
         <!-- 流量控制-->
         <!--<dependency>-->
