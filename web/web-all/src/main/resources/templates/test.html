@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+    <body>
+    1取值:
+    <input th:value="${hello}"/>
+    <br/>
+    2循环：
+    <input th:each="str:${list}" th:value="${str}">
+    <br/>
+    <p th:each="s:${list}">
+        <input th:value="${s}">
+    </p>
+    <br/>
+    3判断:1
+    <input th:if="${1==1}" value="true">
+    <input type="checkbox" th:checked="(${'1'==che}?'checked':'false')"/>
+    <br/>
+    4js:
+    <a th:href="'javascript:a(\''+${hello}+'\');'">点击有红包</a>
+    <script language="JavaScript">
+        function a (ae) {
+            alert(ae)
+        }
+    </script>
+</body>
+</html>
