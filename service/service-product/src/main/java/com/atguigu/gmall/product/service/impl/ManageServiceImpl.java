@@ -1,6 +1,8 @@
 package com.atguigu.gmall.product.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.atguigu.gmall.common.cache.GmallCache;
 import com.atguigu.gmall.common.constant.RedisConst;
 import com.atguigu.gmall.product.mapper.*;
 import com.atguigu.gmall.product.mapper.*;
@@ -17,10 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * ManageServiceImpl
@@ -185,9 +186,16 @@ public class ManageServiceImpl implements ManageService {
         return spuImages;
     }
 
-    //远程调用
+    //远程调用//利用自定义注解aop实现redis事物
+    @GmallCache(prefix = RedisConst.SKUKEY_PREFIX)
     @Override
     public SkuInfo getSkuInfo(Long skuId) {
+
+        return getSkuInfoDB(skuId);
+    }
+
+    //远程调用//备份
+    public SkuInfo getSkuInfobf(Long skuId) {
         String skuRedisKey = RedisConst.SKUKEY_PREFIX+skuId+RedisConst.SKUKEY_SUFFIX;
 
         SkuInfo skuInfo = null;
@@ -231,7 +239,7 @@ public class ManageServiceImpl implements ManageService {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                return getSkuInfo(skuId);
+                return getSkuInfobf(skuId);
             }
         }
         return skuInfo;
@@ -269,6 +277,71 @@ public class ManageServiceImpl implements ManageService {
         List<SpuSaleAttr> spuSaleAttrs = spuSaleAttrMapper.selectSpuSaleAttrListCheckBySku(skuId,spuId);
         return spuSaleAttrs;
     }
+
+    @Override
+    @GmallCache(prefix = "category")
+    public List<JSONObject> getBaseCategoryList() {
+// 声明几个json 集合
+        ArrayList<JSONObject> list = new ArrayList<>();
+// 声明获取所有分类数据集合
+        List<BaseCategoryView> baseCategoryViewList = baseCategoryViewMapper.selectList(null);
+//// 循环上面的集合并安一级分类Id 进行分组
+        Map<Long, List<BaseCategoryView>> category1Map  = baseCategoryViewList.stream().collect(Collectors.groupingBy(BaseCategoryView::getCategory1Id));
+        int index = 1;
+// 获取一级分类下所有数据
+        for (Map.Entry<Long, List<BaseCategoryView>> entry1  : category1Map.entrySet()) {
+// 获取一级分类Id
+            Long category1Id  = entry1.getKey();
+// 获取一级分类下面的所有集合
+            List<BaseCategoryView> category2List1  = entry1.getValue();
+//
+            JSONObject category1 = new JSONObject();
+            category1.put("index", index);
+            category1.put("categoryId",category1Id);
+// 一级分类名称
+            category1.put("categoryName",category2List1.get(0).getCategory1Name());
+// 变量迭代
+            index++;
+// 循环获取二级分类数据
+            Map<Long, List<BaseCategoryView>> category2Map  = category2List1.stream().collect(Collectors.groupingBy(BaseCategoryView::getCategory2Id));
+// 声明二级分类对象集合
+            List<JSONObject> category2Child = new ArrayList<>();
+// 循环遍历
+            for (Map.Entry<Long, List<BaseCategoryView>> entry2  : category2Map.entrySet()) {
+// 获取二级分类Id
+                Long category2Id  = entry2.getKey();
+// 获取二级分类下的所有集合
+                List<BaseCategoryView> category3List  = entry2.getValue();
+// 声明二级分类对象
+                JSONObject category2 = new JSONObject();
+
+                category2.put("categoryId",category2Id);
+                category2.put("categoryName",category3List.get(0).getCategory2Name());
+// 添加到二级分类集合
+                category2Child.add(category2);
+
+                List<JSONObject> category3Child = new ArrayList<>();
+
+// 循环三级分类数据
+                category3List.stream().forEach(category3View -> {
+                    JSONObject category3 = new JSONObject();
+                    category3.put("categoryId",category3View.getCategory3Id());
+                    category3.put("categoryName",category3View.getCategory3Name());
+
+                    category3Child.add(category3);
+                });
+
+// 将三级数据放入二级里面
+                category2.put("categoryChild",category3Child);
+
+            }
+// 将二级数据放入一级里面
+            category1.put("categoryChild",category2Child);
+            list.add(category1);
+        }
+        return list;
+    }
+
 
 
 }

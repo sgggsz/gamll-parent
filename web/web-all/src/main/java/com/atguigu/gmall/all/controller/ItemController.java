@@ -2,12 +2,17 @@ package com.atguigu.gmall.all.controller;
 
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.product.client.ItemFeignClient;
+import com.atguigu.gmall.product.client.ProductFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.context.Context;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -24,6 +29,11 @@ public class ItemController {
 
     @Autowired
     ItemFeignClient itemFeignClient;
+
+    @Autowired
+    ProductFeignClient productFeignClient;
+
+
 
     /**
      * sku详情页面
@@ -45,7 +55,9 @@ public class ItemController {
 
 
 
-        @RequestMapping("testItem")
+
+
+    @RequestMapping("testItem")
     @ResponseBody
     public String testItem(){
 
