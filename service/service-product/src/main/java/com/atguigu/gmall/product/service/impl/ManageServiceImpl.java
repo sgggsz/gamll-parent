@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.atguigu.gmall.common.cache.GmallCache;
 import com.atguigu.gmall.common.constant.RedisConst;
+import com.atguigu.gmall.list.SearchAttr;
 import com.atguigu.gmall.product.mapper.*;
 import com.atguigu.gmall.product.mapper.*;
 import com.atguigu.gmall.product.service.ManageService;
@@ -342,6 +343,13 @@ public class ManageServiceImpl implements ManageService {
         return list;
     }
 
+
+    @Override
+    public List<SearchAttr> getAttrList(Long skuId) {
+        List<SearchAttr> searchAttrs =baseAttrInfoMapper.selectAttrList(skuId);
+        return searchAttrs;
+
+    }
 
 
 }

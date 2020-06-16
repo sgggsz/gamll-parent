@@ -18,4 +18,5 @@ public interface BaseTrademarkService {
 
     List<BaseTrademark> getTrademarkList();
 
+    BaseTrademark getTrademarkByTmId(Long tmId);
 }

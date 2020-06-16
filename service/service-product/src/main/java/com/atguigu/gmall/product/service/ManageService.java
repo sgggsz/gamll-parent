@@ -1,6 +1,7 @@
 package com.atguigu.gmall.product.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.atguigu.gmall.list.SearchAttr;
 import com.atguigu.gmall.model.product.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -47,4 +48,5 @@ public interface ManageService {
 
     List<JSONObject> getBaseCategoryList();
 
+    List<SearchAttr> getAttrList(Long skuId);
 }

@@ -8,6 +8,7 @@
         <module>service-item</module>
         <module>service-item</module>
         <module>service-test</module>
+        <module>service-list</module>
     </modules>
 
     <parent>

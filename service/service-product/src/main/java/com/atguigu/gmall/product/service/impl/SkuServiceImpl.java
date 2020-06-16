@@ -1,5 +1,6 @@
 package com.atguigu.gmall.product.service.impl;
 
+import com.atguigu.gmall.list.client.ListFeignClient;
 import com.atguigu.gmall.product.mapper.*;
 import com.atguigu.gmall.model.product.*;
 import com.atguigu.gmall.product.mapper.*;
@@ -37,6 +38,9 @@ public class SkuServiceImpl implements SkuService {
 
     @Autowired
     SkuSaleAttrValueMapper skuSaleAttrValueMapper;
+
+    @Autowired
+    ListFeignClient listFeignClient;
 
      //根据spuId 查询销售属性集合
     @Override
@@ -87,6 +91,10 @@ public class SkuServiceImpl implements SkuService {
         SkuInfo skuInfoUp = new SkuInfo();
         skuInfoUp.setId(skuId);
         skuInfoUp.setIsSale(1);
+
+        //调用srvice-list方法将商品信息上传到es中
+        listFeignClient.upperGoods(skuId);
+
         skuInfoMapper.updateById(skuInfoUp);
     }
 
@@ -97,6 +105,10 @@ public class SkuServiceImpl implements SkuService {
         SkuInfo skuInfoUp = new SkuInfo();
         skuInfoUp.setId(skuId);
         skuInfoUp.setIsSale(0);
+
+        //调用srvice-list方法将商品信息在es中删除
+        listFeignClient.lowerGoods(skuId);
+
         skuInfoMapper.updateById(skuInfoUp);
     }
 

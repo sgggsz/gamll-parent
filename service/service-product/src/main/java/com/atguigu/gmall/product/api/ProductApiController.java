@@ -2,9 +2,12 @@ package com.atguigu.gmall.product.api;
 
 import com.alibaba.fastjson.JSONObject;
 import com.atguigu.gmall.common.result.Result;
+import com.atguigu.gmall.list.SearchAttr;
 import com.atguigu.gmall.model.product.BaseCategoryView;
+import com.atguigu.gmall.model.product.BaseTrademark;
 import com.atguigu.gmall.model.product.SkuInfo;
 import com.atguigu.gmall.model.product.SpuSaleAttr;
+import com.atguigu.gmall.product.service.BaseTrademarkService;
 import com.atguigu.gmall.product.service.ManageService;
 import com.atguigu.gmall.product.service.SkuService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +32,10 @@ public class ProductApiController {
 
     @Autowired
     SkuService skuService;
+
+    @Autowired
+    BaseTrademarkService baseTrademarkService;
+
 
     /**
      * 根据skuId获取sku信息
@@ -89,5 +96,17 @@ public class ProductApiController {
     public Result getBaseCategoryList() {
         List<JSONObject> list = manageService.getBaseCategoryList();
         return Result.ok(list);
+    }
+
+    @GetMapping("inner/getTrademarkByTmId/{tmId}")
+    BaseTrademark getTrademarkByTmId(@PathVariable("tmId")Long tmId){
+        BaseTrademark baseTrademark =baseTrademarkService.getTrademarkByTmId(tmId);
+        return baseTrademark;
+    }
+
+    @GetMapping("inner/getAttrList/{skuId}")
+    List<SearchAttr> getAttrList(@PathVariable("skuId")Long skuId){
+        List<SearchAttr> searchAttrs = manageService.getAttrList(skuId);
+        return searchAttrs;
     }
  }

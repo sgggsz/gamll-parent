@@ -6,6 +6,7 @@
     <modules>
         <module>service-product-client</module>
         <module>service-item-client</module>
+        <module>service-list-client</module>
     </modules>
     <modelVersion>4.0.0</modelVersion>
     <parent>

@@ -48,4 +48,20 @@
         order by bai.category_level, bai.id
     </select>
 
+
+    <select id="selectAttrList" resultType="com.atguigu.gmall.list.SearchAttr">
+SELECT
+  sav.`attr_id`,
+  bai.`attr_name`,
+  bav.`value_name` AS attr_value
+FROM
+  sku_attr_value sav,
+  base_attr_value bav,
+  base_attr_info bai
+WHERE sav.`attr_id` = bav.`attr_id`
+  AND sav.`value_id` = bav.`id`
+  AND bav.`attr_id` = bai.`id`
+  AND sav.`sku_id` = #{skuId}
+    </select>
+
 </mapper>

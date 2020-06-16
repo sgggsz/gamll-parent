@@ -66,4 +66,11 @@ public class BaseTrademarkServiceimpl implements BaseTrademarkService {
         List<BaseTrademark> baseTrademarks = baseTrademarkMapper.selectList(wrapper);
         return baseTrademarks;
     }
+
+
+    @Override
+    public BaseTrademark getTrademarkByTmId(Long tmId) {
+        BaseTrademark baseTrademark = baseTrademarkMapper.selectById(tmId);
+        return baseTrademark;
+    }
 }
