@@ -1,10 +1,11 @@
 package com.atguigu.gmall.list.client;
 
 import com.atguigu.gmall.common.result.Result;
+import com.atguigu.gmall.list.SearchParam;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @FeignClient(value = "service-list")
 public interface ListFeignClient {
@@ -25,5 +26,15 @@ public interface ListFeignClient {
     @GetMapping("/api/list/inner/lowerGoods/{skuId}")
     Result lowerGoods(@PathVariable("skuId") Long skuId);
 
+    /**
+     * 商品平台属性回显
+     * @param searchParam
+     * @return
+     */
+    @RequestMapping("api/list/list")
+    Result<Map> list(@RequestBody SearchParam searchParam);
 
+    //为商品增加热度值
+    @GetMapping("/api/list/inner/incrHotScore/{skuId}")
+    void incrHotScore(@PathVariable("skuId")Long skuId);
 }

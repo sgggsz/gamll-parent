@@ -1,4 +1,4 @@
-package com.atguigu.gmall.model.list;
+package com.atguigu.gmall.list;
 
 import lombok.Data;
 

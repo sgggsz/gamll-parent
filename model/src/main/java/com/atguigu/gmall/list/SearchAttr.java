@@ -1,8 +1,10 @@
-package com.atguigu.gmall.model.list;
+package com.atguigu.gmall.list;
 
 import lombok.Data;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+
+import java.util.Objects;
 
 @Data
 public class SearchAttr {
@@ -38,5 +40,20 @@ public class SearchAttr {
 
     public void setAttrName(String attrName) {
         this.attrName = attrName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SearchAttr that = (SearchAttr) o;
+        return Objects.equals(attrId, that.attrId) &&
+                Objects.equals(attrValue, that.attrValue) &&
+                Objects.equals(attrName, that.attrName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(attrId, attrValue, attrName);
     }
 }

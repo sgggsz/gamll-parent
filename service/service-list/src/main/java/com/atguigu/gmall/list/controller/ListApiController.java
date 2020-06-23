@@ -2,13 +2,16 @@ package com.atguigu.gmall.list.controller;
 
 import com.atguigu.gmall.common.result.Result;
 import com.atguigu.gmall.list.Goods;
+import com.atguigu.gmall.list.SearchParam;
+import com.atguigu.gmall.list.SearchResponseAttrVo;
+import com.atguigu.gmall.list.SearchResponseVo;
 import com.atguigu.gmall.list.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * ListApiController
@@ -60,5 +63,32 @@ public class ListApiController {
 
         searchService.lowerGoods(skuId);
         return Result.ok();
+    }
+
+    /**
+     * 商品平台属性回显
+     * @param searchParam
+     * @return
+     */
+    @RequestMapping("list")
+    Result<Map> list(@RequestBody SearchParam searchParam){
+
+        SearchResponseVo searchResponseVo = searchService.list(searchParam);
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("goodsList",searchResponseVo.getGoodsList());
+        map.put("attrsList",searchResponseVo.getAttrsList());
+        map.put("trademarkList",searchResponseVo.getTrademarkList());
+
+        return Result.ok(map);
+    }
+
+    /**
+     * 为商品增加热度值
+     * @param skuId
+     */
+    @GetMapping("inner/incrHotScore/{skuId}")
+    void incrHotScore(@PathVariable("skuId")Long skuId){
+        searchService.incrHotScore(skuId);
     }
 }

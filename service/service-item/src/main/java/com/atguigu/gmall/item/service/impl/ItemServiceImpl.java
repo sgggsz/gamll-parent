@@ -2,6 +2,7 @@ package com.atguigu.gmall.item.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.atguigu.gmall.item.service.ItemService;
+import com.atguigu.gmall.list.client.ListFeignClient;
 import com.atguigu.gmall.model.product.BaseCategoryView;
 import com.atguigu.gmall.model.product.SkuInfo;
 import com.atguigu.gmall.model.product.SpuSaleAttr;
@@ -31,6 +32,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Autowired
     ThreadPoolExecutor threadPoolExecutor;
+
+    @Autowired
+    ListFeignClient listFeignClient;
 
 
     @Override
@@ -80,6 +84,9 @@ public class ItemServiceImpl implements ItemService {
                 skuValueIdsMapCompletableFuture,
                 skuPriceCF,
                 categoryViewCompletableFuture).join();
+
+        //为商品的访问增加热度值
+        listFeignClient.incrHotScore(skuId);
             return map;
     }
 

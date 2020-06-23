@@ -6,13 +6,17 @@
       <module fileurl="file://$PROJECT_DIR$/common/common-util/common-util.iml" filepath="$PROJECT_DIR$/common/common-util/common-util.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/gamll-parent.iml" filepath="$PROJECT_DIR$/.idea/gamll-parent.iml" />
       <module fileurl="file://$PROJECT_DIR$/model/model.iml" filepath="$PROJECT_DIR$/model/model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/server-gate-way/server-gate-way.iml" filepath="$PROJECT_DIR$/server-gate-way/server-gate-way.iml" />
       <module fileurl="file://$PROJECT_DIR$/service/service.iml" filepath="$PROJECT_DIR$/service/service.iml" />
       <module fileurl="file://$PROJECT_DIR$/service-client/service-client.iml" filepath="$PROJECT_DIR$/service-client/service-client.iml" />
       <module fileurl="file://$PROJECT_DIR$/service/service-item/service-item.iml" filepath="$PROJECT_DIR$/service/service-item/service-item.iml" />
       <module fileurl="file://$PROJECT_DIR$/service-client/service-item-client/service-item-client.iml" filepath="$PROJECT_DIR$/service-client/service-item-client/service-item-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/service/service-list/service-list.iml" filepath="$PROJECT_DIR$/service/service-list/service-list.iml" />
+      <module fileurl="file://$PROJECT_DIR$/service-client/service-list-client/service-list-client.iml" filepath="$PROJECT_DIR$/service-client/service-list-client/service-list-client.iml" />
       <module fileurl="file://$PROJECT_DIR$/service/service-product/service-product.iml" filepath="$PROJECT_DIR$/service/service-product/service-product.iml" />
       <module fileurl="file://$PROJECT_DIR$/service-client/service-product-client/service-product-client.iml" filepath="$PROJECT_DIR$/service-client/service-product-client/service-product-client.iml" />
       <module fileurl="file://$PROJECT_DIR$/service/service-test/service-test.iml" filepath="$PROJECT_DIR$/service/service-test/service-test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/service/service-user/service-user.iml" filepath="$PROJECT_DIR$/service/service-user/service-user.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/service-util/service-util.iml" filepath="$PROJECT_DIR$/common/service-util/service-util.iml" />
       <module fileurl="file://$PROJECT_DIR$/service/service-item/serviceitem.iml" filepath="$PROJECT_DIR$/service/service-item/serviceitem.iml" />
       <module fileurl="file://$PROJECT_DIR$/web/web.iml" filepath="$PROJECT_DIR$/web/web.iml" />
