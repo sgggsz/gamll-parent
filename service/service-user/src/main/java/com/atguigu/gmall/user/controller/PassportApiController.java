@@ -36,6 +36,7 @@ public class PassportApiController {
     @Autowired
     private RedisTemplate redisTemplate;
 
+
     /**
      * 登录
      *

@@ -10,6 +10,7 @@
         <module>service-test</module>
         <module>service-list</module>
         <module>service-user</module>
+        <module>service-cart</module>
     </modules>
 
     <parent>

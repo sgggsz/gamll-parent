@@ -42,4 +42,6 @@ public interface ProductFeignClient {
 
     @GetMapping("api/product/inner/getAttrList/{skuId}")
     List<SearchAttr> getAttrList(@PathVariable("skuId")Long skuId);
+
+
 }

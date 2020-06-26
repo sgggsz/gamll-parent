@@ -95,8 +95,34 @@ public class AuthGlobalFilter implements GlobalFilter {
         if (!StringUtils.isEmpty(userId)){
             request.mutate().header("userId",userId).build();
             return chain.filter(exchange.mutate().request(request).build());
+        }else {
+            String userTempId = getUserTempId(request);
+            if (!StringUtils.isEmpty(userTempId)){
+                request.mutate().header("userTempId",userTempId).build();
+                return chain.filter(exchange.mutate().request(request).build());
+            }
         }
         return chain.filter(exchange);
+    }
+
+    //获取临时id（购物车用）
+    private String getUserTempId(ServerHttpRequest request) {
+        String userTempId = "";
+        //已经被网关验证过身份的用户id，可以直接从header中获取
+        List<String> strings = request.getHeaders().get("userTempId");
+        if (null != strings){
+            userTempId = strings.get(0);
+        }
+
+        //第一次被网关验证身份的，通过token获取userID
+        if (StringUtils.isEmpty(userTempId)){
+            MultiValueMap<String, HttpCookie> cookies = request.getCookies();
+            HttpCookie cookie = cookies.getFirst("userTempId");
+            if (cookie!=null){
+                userTempId = URLDecoder.decode(cookie.getValue());
+            }
+        }
+        return userTempId;
     }
 
     private String getUserId(ServerHttpRequest request) {
@@ -117,6 +143,15 @@ public class AuthGlobalFilter implements GlobalFilter {
                 Object o = redisTemplate.opsForValue().get(key);
                 if(null!=o){
                     userId = JSONObject.toJSONString(o);
+                }
+            }else {
+                List<String> strings1 = request.getHeaders().get("token");
+                if (null != strings1){
+                String token1 = strings1.get(0);
+                     Object a = redisTemplate.opsForValue().get(RedisConst.USER_LOGIN_KEY_PREFIX + token1);
+                    if(null!=a){
+                        userId = JSONObject.toJSONString(a);
+                    }
                 }
             }
 
