@@ -36,6 +36,8 @@
     <orderEntry type="module" module-name="service-list-client" />
     <orderEntry type="module" module-name="service-cart-client" />
     <orderEntry type="module" module-name="service-user-client" />
+    <orderEntry type="module" module-name="service-order-client" />
+    <orderEntry type="module" module-name="service-payment-client" />
     <orderEntry type="module" module-name="web-util" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-web:2.2.1.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-json:2.2.1.RELEASE" level="project" />

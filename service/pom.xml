@@ -11,6 +11,10 @@
         <module>service-list</module>
         <module>service-user</module>
         <module>service-cart</module>
+        <module>service-order</module>
+        <module>service-order</module>
+        <module>service-payment</module>
+        <module>service-payment</module>
     </modules>
 
     <parent>
