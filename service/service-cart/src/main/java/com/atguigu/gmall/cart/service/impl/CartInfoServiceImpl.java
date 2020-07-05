@@ -100,6 +100,20 @@ public class CartInfoServiceImpl implements CartInfoService {
     public List<CartInfo> cartList(String userIdParam) {
         List<CartInfo> values = redisTemplate.opsForHash().values(getUserCartKey(userIdParam));
 
+        if (values.size()<= 0){
+            QueryWrapper<CartInfo> wrapper = new QueryWrapper<>();
+            wrapper.eq("user_id",userIdParam);
+            values = cartInfoMapper.selectList(wrapper);
+            if (null!=values){
+                HashMap<String, CartInfo> map = new HashMap<>();
+                for (CartInfo cartInfo : values) {
+                    BigDecimal skuPrice = productFeignClient.getSkuPrice(cartInfo.getSkuId());
+                    cartInfo.setSkuPrice(skuPrice);
+                    map.put(cartInfo.getSkuId()+"",cartInfo);
+                }
+                redisTemplate.opsForHash().putAll(getUserCartKey(userIdParam),map);
+            }
+        }
         return values;
     }
     //删除购物车
@@ -155,35 +169,47 @@ public class CartInfoServiceImpl implements CartInfoService {
         wrapper.eq("user_id",userTempId);
         List<CartInfo> userTempIdcartInfos = cartInfoMapper.selectList(wrapper);
         cartInfoMapper.delete(wrapper);
+        //删除缓存
+        redisTemplate.delete(getUserCartKey(userTempId));
 
         QueryWrapper<CartInfo> wrapper1 = new QueryWrapper<>();
         wrapper1.eq("user_id",userId);
         List<CartInfo> userIdcartInfos = cartInfoMapper.selectList(wrapper1);
         cartInfoMapper.delete(wrapper1);
+        //删除缓存
+        redisTemplate.delete(getUserCartKey(userId));
 
-        for (CartInfo userIdcartInfo : userIdcartInfos) {
-            String userId1 = userIdcartInfo.getUserId();
-            Integer skuNum = userIdcartInfo.getSkuNum();
 
-            for (CartInfo userTempIdcartInfo : userTempIdcartInfos) {
+        if (userIdcartInfos!=null && userIdcartInfos.size()>0){
+            for (CartInfo userIdcartInfo : userIdcartInfos) {
+                String userId1 = userIdcartInfo.getUserId();
+                Integer skuNum = userIdcartInfo.getSkuNum();
 
-                if (userIdcartInfo.getSkuId() == userTempIdcartInfo.getSkuId()){
-                    skuNum += userTempIdcartInfo.getSkuNum();
-                    //将id改为0
-                    userTempIdcartInfo.setId(0L);
-                }else {
-                    //将userId同步
-                    userTempIdcartInfo.setUserId(userId1);
+                for (CartInfo userTempIdcartInfo : userTempIdcartInfos) {
+
+                    if (userIdcartInfo.getSkuId() == userTempIdcartInfo.getSkuId()){
+                        skuNum += userTempIdcartInfo.getSkuNum();
+                        //将id改为0
+                        userTempIdcartInfo.setId(0L);
+                    }else {
+                        //将userId同步
+                        userTempIdcartInfo.setUserId(userId1);
+                    }
                 }
             }
-        }
 
-        //删除同步数据
-        for (int i = 0; i < userTempIdcartInfos.size(); i++) {
-            if(userTempIdcartInfos.get(i).getId() == 0L){
-                userTempIdcartInfos.remove(i);
+            //删除同步数据
+            for (int i = 0; i < userTempIdcartInfos.size(); i++) {
+                if(userTempIdcartInfos.get(i).getId() == 0L){
+                    userTempIdcartInfos.remove(i);
+                }
+            }
+        }else {
+            for (CartInfo userTempIdcartInfo : userTempIdcartInfos) {
+                userTempIdcartInfo.setUserId(userId);
             }
         }
+
 
         //添加数据库
         for (CartInfo userIdcartInfo : userIdcartInfos) {
