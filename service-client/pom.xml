@@ -11,6 +11,7 @@
         <module>service-user-client</module>
         <module>service-order-client</module>
         <module>service-payment-client</module>
+        <module>service-seckill-client</module>
     </modules>
     <modelVersion>4.0.0</modelVersion>
     <parent>

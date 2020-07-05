@@ -32,16 +32,24 @@ public class PayController {
     @RequestMapping("callback/return")
     public String callbackReturn(ModelMap modelMap, HttpServletRequest request){
 
+        // 获得签名并且验证签名
+        String sign = request.getParameter("sign");
+        // 调用支付服务paymentApi验证签名paymentFeignClient.yanqian(sign);
+
         String out_trade_no = request.getParameter("out_trade_no");
         String trade_no = request.getParameter("trade_no");
-
+        String trade_status = request.getParameter("trade_status");
 
         // 接收回调参数，修改支付信息状态
         PaymentInfo paymentInfo = new PaymentInfo();
         paymentInfo.setCallbackTime(new Date());
         paymentInfo.setCallbackContent(request.getQueryString());
         paymentInfo.setTradeNo(trade_no);
-        paymentInfo.setPaymentStatus(PaymentStatus.PAID.toString());
+        // 根据交易状态更新支付服务的支付结果
+        if(true){
+            trade_status = PaymentStatus.PAID.toString();
+        }
+        paymentInfo.setPaymentStatus(trade_status);
         paymentInfo.setOutTradeNo(out_trade_no);
         paymentFeignClient.updatePayment(paymentInfo);
 

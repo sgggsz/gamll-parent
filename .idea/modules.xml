@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/common/common-util/common-util.iml" filepath="$PROJECT_DIR$/common/common-util/common-util.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/gamll-parent.iml" filepath="$PROJECT_DIR$/.idea/gamll-parent.iml" />
       <module fileurl="file://$PROJECT_DIR$/model/model.iml" filepath="$PROJECT_DIR$/model/model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/rabbit-util/rabbit-util.iml" filepath="$PROJECT_DIR$/common/rabbit-util/rabbit-util.iml" />
       <module fileurl="file://$PROJECT_DIR$/server-gate-way/server-gate-way.iml" filepath="$PROJECT_DIR$/server-gate-way/server-gate-way.iml" />
       <module fileurl="file://$PROJECT_DIR$/service/service.iml" filepath="$PROJECT_DIR$/service/service.iml" />
       <module fileurl="file://$PROJECT_DIR$/service/service-cart/service-cart.iml" filepath="$PROJECT_DIR$/service/service-cart/service-cart.iml" />
@@ -15,12 +16,16 @@
       <module fileurl="file://$PROJECT_DIR$/service-client/service-item-client/service-item-client.iml" filepath="$PROJECT_DIR$/service-client/service-item-client/service-item-client.iml" />
       <module fileurl="file://$PROJECT_DIR$/service/service-list/service-list.iml" filepath="$PROJECT_DIR$/service/service-list/service-list.iml" />
       <module fileurl="file://$PROJECT_DIR$/service-client/service-list-client/service-list-client.iml" filepath="$PROJECT_DIR$/service-client/service-list-client/service-list-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/service/service-mq/service-mq.iml" filepath="$PROJECT_DIR$/service/service-mq/service-mq.iml" />
       <module fileurl="file://$PROJECT_DIR$/service/service-order/service-order.iml" filepath="$PROJECT_DIR$/service/service-order/service-order.iml" />
       <module fileurl="file://$PROJECT_DIR$/service-client/service-order-client/service-order-client.iml" filepath="$PROJECT_DIR$/service-client/service-order-client/service-order-client.iml" />
       <module fileurl="file://$PROJECT_DIR$/service/service-payment/service-payment.iml" filepath="$PROJECT_DIR$/service/service-payment/service-payment.iml" />
       <module fileurl="file://$PROJECT_DIR$/service-client/service-payment-client/service-payment-client.iml" filepath="$PROJECT_DIR$/service-client/service-payment-client/service-payment-client.iml" />
       <module fileurl="file://$PROJECT_DIR$/service/service-product/service-product.iml" filepath="$PROJECT_DIR$/service/service-product/service-product.iml" />
       <module fileurl="file://$PROJECT_DIR$/service-client/service-product-client/service-product-client.iml" filepath="$PROJECT_DIR$/service-client/service-product-client/service-product-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/service/service-seckill/service-seckill.iml" filepath="$PROJECT_DIR$/service/service-seckill/service-seckill.iml" />
+      <module fileurl="file://$PROJECT_DIR$/service-client/service-seckill-client/service-seckill-client.iml" filepath="$PROJECT_DIR$/service-client/service-seckill-client/service-seckill-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/service/service-task/service-task.iml" filepath="$PROJECT_DIR$/service/service-task/service-task.iml" />
       <module fileurl="file://$PROJECT_DIR$/service/service-test/service-test.iml" filepath="$PROJECT_DIR$/service/service-test/service-test.iml" />
       <module fileurl="file://$PROJECT_DIR$/service/service-user/service-user.iml" filepath="$PROJECT_DIR$/service/service-user/service-user.iml" />
       <module fileurl="file://$PROJECT_DIR$/service-client/service-user-client/service-user-client.iml" filepath="$PROJECT_DIR$/service-client/service-user-client/service-user-client.iml" />

@@ -99,6 +99,19 @@ public class OrderServiceImpl implements OrderService {
         return orderInfo;
     }
 
+    @Override
+    public void updateOrderStatus(OrderInfo orderInfo) {
+        orderInfoMapper.updateById(orderInfo);
+    }
+
+    @Override
+    public void sendOrderStatus(Long orderId) {
+        // 初始化库存的订单队列
+        String orderTaskJson = "1";// 对库存接收的订单详情进行格式化处理
+        //ToDo 锁定库存
+//        rabbitService.sendMessage(MqConst.EXCHANGE_DIRECT_WARE_STOCK, MqConst.ROUTING_WARE_STOCK, orderTaskJson);
+    }
+
 //    public void deleteTradeNo(String userId) {
 //        redisTemplate.delete("user:"+ userId + ":tradeNo");
 //    }

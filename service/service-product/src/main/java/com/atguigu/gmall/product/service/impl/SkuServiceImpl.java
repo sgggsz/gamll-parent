@@ -1,7 +1,8 @@
 package com.atguigu.gmall.product.service.impl;
 
+import com.atguigu.gmall.common.constant.MqConst;
+import com.atguigu.gmall.common.service.RabbitService;
 import com.atguigu.gmall.list.client.ListFeignClient;
-import com.atguigu.gmall.product.mapper.*;
 import com.atguigu.gmall.model.product.*;
 import com.atguigu.gmall.product.mapper.*;
 import com.atguigu.gmall.product.service.SkuService;
@@ -41,6 +42,9 @@ public class SkuServiceImpl implements SkuService {
 
     @Autowired
     ListFeignClient listFeignClient;
+
+    @Autowired
+    RabbitService rabbitService;
 
      //根据spuId 查询销售属性集合
     @Override
@@ -84,6 +88,10 @@ public class SkuServiceImpl implements SkuService {
 
     }
 
+    /**
+     * 商品上架
+     * @param skuId
+     */
     @Override
     @Transactional
     public void onSale(Long skuId) {
@@ -93,11 +101,18 @@ public class SkuServiceImpl implements SkuService {
         skuInfoUp.setIsSale(1);
 
         //调用srvice-list方法将商品信息上传到es中
-        listFeignClient.upperGoods(skuId);
+        //listFeignClient.upperGoods(skuId);
+
+        //利用rabbitMq远程调用
+        rabbitService.sendMessage(MqConst.EXCHANGE_DIRECT_GOODS,MqConst.ROUTING_GOODS_UPPER,skuId);
 
         skuInfoMapper.updateById(skuInfoUp);
     }
 
+    /**
+     * 商品下架
+     * @param skuId
+     */
     @Override
     @Transactional
     public void cancelSale(Long skuId) {
@@ -107,7 +122,10 @@ public class SkuServiceImpl implements SkuService {
         skuInfoUp.setIsSale(0);
 
         //调用srvice-list方法将商品信息在es中删除
-        listFeignClient.lowerGoods(skuId);
+        //listFeignClient.lowerGoods(skuId);
+
+        //利用rabbitMq远程调用
+        rabbitService.sendMessage(MqConst.EXCHANGE_DIRECT_GOODS,MqConst.ROUTING_GOODS_LOWER,skuId);
 
         skuInfoMapper.updateById(skuInfoUp);
     }

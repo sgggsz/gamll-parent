@@ -21,6 +21,14 @@
             <artifactId>service-list-client</artifactId>
             <version>1.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.atguigu.gmall</groupId>
+            <artifactId>rabbit-util</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+
     </dependencies>
 
 

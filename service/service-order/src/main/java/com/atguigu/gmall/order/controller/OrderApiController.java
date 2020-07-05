@@ -13,10 +13,7 @@ import com.atguigu.gmall.order.service.OrderService;
 import com.atguigu.gmall.user.client.UserFeignClient;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
@@ -40,6 +37,18 @@ public class OrderApiController {
 
     @Autowired
     UserFeignClient userFeignClient;
+
+    /**
+     * 提交秒杀订单
+     * @param orderInfo
+     * @return
+     */
+    @PostMapping("/api/order/inner/seckill/submitOrder")
+    Long submitOrder(@RequestBody OrderInfo orderInfo){
+        OrderInfo orderInfo1 = orderService.saveOrderInfo(orderInfo);
+        Long id = orderInfo1.getId();
+        return id;
+    }
 
     @PostMapping("/inner/getOrderInfo/{orderId}")
     OrderInfo getOrderInfo(@PathVariable("orderId") String orderId){
