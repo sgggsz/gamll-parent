@@ -148,4 +148,51 @@ public class CartInfoServiceImpl implements CartInfoService {
         }
         return cartInfos;
     }
+
+    @Override
+    public void mergeCart(String userId, String userTempId) {
+        QueryWrapper<CartInfo> wrapper = new QueryWrapper<>();
+        wrapper.eq("user_id",userTempId);
+        List<CartInfo> userTempIdcartInfos = cartInfoMapper.selectList(wrapper);
+        cartInfoMapper.delete(wrapper);
+
+        QueryWrapper<CartInfo> wrapper1 = new QueryWrapper<>();
+        wrapper1.eq("user_id",userId);
+        List<CartInfo> userIdcartInfos = cartInfoMapper.selectList(wrapper1);
+        cartInfoMapper.delete(wrapper1);
+
+        for (CartInfo userIdcartInfo : userIdcartInfos) {
+            String userId1 = userIdcartInfo.getUserId();
+            Integer skuNum = userIdcartInfo.getSkuNum();
+
+            for (CartInfo userTempIdcartInfo : userTempIdcartInfos) {
+
+                if (userIdcartInfo.getSkuId() == userTempIdcartInfo.getSkuId()){
+                    skuNum += userTempIdcartInfo.getSkuNum();
+                    //将id改为0
+                    userTempIdcartInfo.setId(0L);
+                }else {
+                    //将userId同步
+                    userTempIdcartInfo.setUserId(userId1);
+                }
+            }
+        }
+
+        //删除同步数据
+        for (int i = 0; i < userTempIdcartInfos.size(); i++) {
+            if(userTempIdcartInfos.get(i).getId() == 0L){
+                userTempIdcartInfos.remove(i);
+            }
+        }
+
+        //添加数据库
+        for (CartInfo userIdcartInfo : userIdcartInfos) {
+            cartInfoMapper.insert(userIdcartInfo);
+        }
+
+        for (CartInfo userTempIdcartInfo : userTempIdcartInfos) {
+            cartInfoMapper.insert(userTempIdcartInfo);
+        }
+
+    }
 }

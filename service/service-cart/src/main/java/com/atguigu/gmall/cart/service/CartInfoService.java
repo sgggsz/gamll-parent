@@ -15,4 +15,5 @@ public interface CartInfoService {
 
     List<CartInfo> getCartCheckedList(String userId);
 
+    void mergeCart(String userId, String userTempId);
 }

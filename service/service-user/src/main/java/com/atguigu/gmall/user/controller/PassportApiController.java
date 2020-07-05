@@ -10,10 +10,13 @@ package com.atguigu.gmall.user.controller;
 
 import com.atguigu.gmall.common.constant.RedisConst;
 import com.atguigu.gmall.common.result.Result;
+import com.atguigu.gmall.common.service.RabbitService;
+import com.atguigu.gmall.common.util.AuthContextHolder;
 import com.atguigu.gmall.model.user.UserInfo;
 import com.atguigu.gmall.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +39,9 @@ public class PassportApiController {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    @Autowired
+    RabbitService rabbitService;
+
 
     /**
      * 登录
@@ -44,9 +50,24 @@ public class PassportApiController {
      * @return
      */
     @PostMapping("login")
-    public Result login(@RequestBody UserInfo userInfo) {
+    public Result login(@RequestBody UserInfo userInfo,HttpServletRequest request) {
+
+
+        //登录
         UserInfo info = userService.login(userInfo);
 
+        //合并购物车
+        String userTempId = AuthContextHolder.getUserTempId(request);
+        if (!StringUtils.isEmpty(userTempId)){
+            Boolean is= redisTemplate.hasKey(RedisConst.USER_KEY_PREFIX + userTempId + RedisConst.USER_CART_KEY_SUFFIX);
+            if (is){
+                String userId = info.getId()+"";
+                HashMap<String, String> userMap = new HashMap<>();
+                userMap.put("userId",userId);
+                userMap.put("userTempId",userTempId);
+                rabbitService.sendMessage("cart","C",userMap);
+            }
+        }
         if (info != null) {
             String token = UUID.randomUUID().toString().replaceAll("-", "");
             HashMap<String, Object> map = new HashMap<>();
